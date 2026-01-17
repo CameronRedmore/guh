@@ -1,0 +1,155 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # macOS
+          - platform: "macos-latest" # ARM64 (M1/M2)
+            args: "--target aarch64-apple-darwin"
+            target: "aarch64-apple-darwin"
+          - platform: "macos-15" # Intel
+            args: "--target x86_64-apple-darwin"
+            target: "x86_64-apple-darwin"
+          
+          # Windows
+          - platform: "windows-latest" # x64
+            args: ""
+            target: "x86_64-pc-windows-msvc"
+          - platform: "windows-11-arm" # ARM64 (Hosted Runner)
+            args: ""
+            target: "aarch64-pc-windows-msvc"
+
+          # Linux
+          - platform: "ubuntu-24.04" # x64
+            args: ""
+            target: "x86_64-unknown-linux-gnu"
+          - platform: "ubuntu-24.04-arm" # ARM64 (Hosted Runner)
+            args: ""
+            target: "aarch64-unknown-linux-gnu"
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install dependencies (ubuntu only)
+        if: contains(matrix.platform, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf flatpak flatpak-builder xdg-utils
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: install frontend dependencies
+        run: pnpm install
+
+      - name: Build and Upload
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: app-v__VERSION__ 
+          releaseName: "App v__VERSION__"
+          releaseBody: "See the assets to download this version and install."
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
+
+      - name: Build Flatpak (Linux Only)
+        if: contains(matrix.platform, 'ubuntu')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Setup Flatpak
+          flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          flatpak install --user -y flathub org.gnome.Sdk//46 org.gnome.Platform//46
+
+          mkdir dist
+          mkdir -p dist/icons
+          
+          # Copy binary
+          cp src-tauri/target/release/guh dist/
+          
+          # Copy icons
+          cp src-tauri/icons/128x128.png dist/icons/
+          cp src-tauri/icons/32x32.png dist/icons/
+          
+          # Find and copy desktop file
+          find src-tauri/target/release/bundle -name "*.desktop" -exec cp {} dist/guh.desktop \;
+          
+          # Build Flatpak
+          flatpak-builder --repo=repo --force-clean build-dir flatpak/uk.cmzi.guh.yml
+          flatpak build-bundle repo guh.flatpak uk.cmzi.guh
+          
+          # Get Version and Upload
+          APP_VERSION=$(node -p "require('./package.json').version")
+          RELEASE_TAG="app-v$APP_VERSION"
+          
+          # Upload with retry logic or verify tag existence
+          gh release upload "$RELEASE_TAG" guh.flatpak
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: setup java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: setup android sdk
+        uses: android-actions/setup-android@v3
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+
+      - name: install frontend dependencies
+        run: pnpm install
+
+      - name: Build Android
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: app-v__VERSION__ 
+          releaseName: "App v__VERSION__"
+          releaseBody: "See the assets to download this version and install."
+          releaseDraft: true
+          prerelease: false
+          args: "--target aarch64-linux-android --target armv7-linux-androideabi --target i686-linux-android --target x86_64-linux-android"

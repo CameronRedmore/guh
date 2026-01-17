@@ -1,0 +1,208 @@
+:root {
+  /* Windows 95 Design System Color Palette */
+  --win-gray: #c0c0c0;
+  --win-dark-gray: #808080;
+  --win-light: #ffffff;
+  --win-black: #000000;
+  --win-blue-left: #000080;
+  --win-blue-right: #1084d0;
+  --font-main: 'W95FA', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  user-select: none;
+  cursor: default;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--win-gray);
+  font-family: var(--font-main);
+  font-size: 1rem;
+  -webkit-font-smoothing: none;
+  image-rendering: pixelated;
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--win-gray);
+  border: 1px solid var(--win-gray);
+}
+
+/* 
+   Three-dimensional border effect using nested layers of contrasting light and dark colors.
+   The 'outer' border provides the raised/sunken perspective.
+*/
+.window-border {
+  width: 100%;
+  height: 100%;
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-dark-gray);
+  border-bottom: 2px solid var(--win-dark-gray);
+  padding: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+.window-inner-border {
+  flex: 1;
+  border-top: 1px solid var(--win-light);
+  border-left: 1px solid var(--win-light);
+  border-right: 1px solid var(--win-dark-gray);
+  border-bottom: 1px solid var(--win-dark-gray);
+  display: flex;
+  flex-direction: column;
+}
+
+.app-container {
+  width: 100%;
+  height: 100%;
+  background-color: var(--win-gray);
+  display: flex;
+  flex-direction: column;
+}
+
+
+.title-bar {
+  background: linear-gradient(to right, var(--win-blue-left), var(--win-blue-right));
+  padding: 3px 2px 3px 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 26px;
+  height: 26px;
+}
+
+.title-bar-text {
+  color: white;
+  font-weight: bold;
+  font-size: 0.85em;
+  margin-left: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.title-bar-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  margin-right: 4px;
+  background: linear-gradient(135deg, white, blue);
+}
+
+.window-controls {
+  display: flex;
+  gap: 2px;
+}
+
+.close-button {
+  width: 20px;
+  height: 18px;
+  height: 18px;
+  background-color: var(--win-gray);
+  border-top: 1px solid var(--win-light);
+  border-left: 1px solid var(--win-light);
+  border-right: 1px solid var(--win-black);
+  border-bottom: 1px solid var(--win-black);
+  box-shadow: 1px 1px 0 var(--win-black) inset;
+
+  border-top: 1px solid var(--win-light);
+  border-left: 1px solid var(--win-light);
+  border-right: 1px solid var(--win-dark-gray);
+  border-bottom: 1px solid var(--win-dark-gray);
+  box-shadow: 1px 1px 0 0 black;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7em;
+  font-weight: normal;
+  padding-bottom: 2px;
+}
+
+.close-button:active {
+  border-top: 1px solid var(--win-dark-gray);
+  border-left: 1px solid var(--win-dark-gray);
+  border-right: 1px solid var(--win-light);
+  border-bottom: 1px solid var(--win-light);
+  padding-top: 2px;
+  padding-left: 2px;
+  box-shadow: none;
+}
+
+
+.content {
+  padding: 15px;
+  flex: 1;
+  color: black;
+  font-size: 1em;
+}
+
+.text-content p {
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+
+.list-content {
+  margin-top: 8px;
+}
+
+.list-content div {
+  margin-bottom: 8px;
+}
+
+.guh-container {
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+  text-align: center;
+}
+
+.guh-label {
+  position: relative;
+  top: 50px;
+  right: 10px;
+}
+
+.guh-image {
+  width: 250px;
+  mix-blend-mode: normal;
+}
+
+
+.context-menu {
+  position: absolute;
+  z-index: 1000;
+  background-color: var(--win-gray);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-black);
+  border-bottom: 2px solid var(--win-black);
+  padding: 2px;
+  display: none;
+  flex-direction: column;
+  min-width: 120px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.context-menu-item {
+  padding: 3px 10px;
+  cursor: default;
+}
+
+.context-menu-item:hover {
+  background-color: var(--win-blue-left);
+  color: white;
+}
+
+
+body.modern-mode {
+  --font-main: "Open Sans", sans-serif;
+  font-size: 0.9rem;
+  -webkit-font-smoothing: antialiased;
+  image-rendering: auto;
+}

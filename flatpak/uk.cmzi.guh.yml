@@ -1,0 +1,22 @@
+app-id: uk.cmzi.guh
+runtime: org.gnome.Platform
+runtime-version: '46'
+sdk: org.gnome.Sdk
+command: guh
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --share=network
+modules:
+  - name: guh
+    buildsystem: simple
+    build-commands:
+      - install -D guh /app/bin/guh
+      - install -D guh.desktop /app/share/applications/uk.cmzi.guh.desktop
+      - install -D icons/128x128.png /app/share/icons/hicolor/128x128/apps/uk.cmzi.guh.png
+      - install -D icons/32x32.png /app/share/icons/hicolor/32x32/apps/uk.cmzi.guh.png
+    sources:
+      - type: dir
+        path: ../dist

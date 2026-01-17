@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guh Software</title>
+    <link rel="stylesheet" href="assets/fonts/W95FA.css" />
+    <link rel="stylesheet" href="assets/fonts/opensans.css" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="window-border">
+
+        <div class="app-container">
+
+            <div class="title-bar" id="title-bar" data-tauri-drag-region>
+                <div class="title-bar-text" data-tauri-drag-region>
+                    <img src="assets/icon.png" class="title-bar-icon" style="display:none">
+                    <div
+                        style="background: linear-gradient(135deg, white 0%, cyan 50%, blue 100%); width: 16px; height: 16px; margin-right: 6px; border: 1px solid white;">
+                    </div>
+                    Guh Software.exe
+                </div>
+                <div class="window-controls">
+                    <div class="close-button" id="close-btn">X</div>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="text-content">
+                    <p>Welcome to the Guh Software. The software is now ready to use.</p>
+
+                    <p style="margin-top: 15px;">How to use:</p>
+
+                    <div class="list-content">
+                        <div>1. Open Guh software.</div>
+                        <div>2. Look at Guh, for as long as you like.</div>
+                        <div>3. Leave.</div>
+                    </div>
+                </div>
+
+                <div class="guh-container">
+                    <div class="guh-label">Guh</div>
+                    <img src="assets/guh.webp" class="guh-image" alt="Guh">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="context-menu" class="context-menu" style="display: none;">
+        <div class="context-menu-item" data-mode="retro">Retro Mode</div>
+        <div class="context-menu-item" data-mode="modern">Modern Mode</div>
+    </div>
+
+    <script type="module" src="/main.js"></script>
+</body>
+
+</html>
