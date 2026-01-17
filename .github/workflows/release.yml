@@ -153,4 +153,4 @@ jobs:
           RELEASE_TAG="app-v$APP_VERSION"
           
           # Find and upload APKs
-          find src-tauri/gen/android/app/build/outputs/apk/release -name "*.apk" -exec gh release upload "$RELEASE_TAG" {} --clobber \;
+          find src-tauri/gen/android/app/build/outputs/apk/universal/release -name "*.apk" -exec gh release upload "$RELEASE_TAG" {} --clobber \;
