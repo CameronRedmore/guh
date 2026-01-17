@@ -101,14 +101,14 @@ jobs:
           
           # Build Flatpak
           flatpak-builder --repo=repo --force-clean build-dir flatpak/uk.cmzi.guh.yml
-          flatpak build-bundle repo guh.flatpak uk.cmzi.guh
+          flatpak build-bundle repo "guh-${{ matrix.target }}.flatpak" uk.cmzi.guh
           
           # Get Version and Upload
           APP_VERSION=$(node -p "require('./package.json').version")
           RELEASE_TAG="app-v$APP_VERSION"
           
           # Upload with retry logic or verify tag existence
-          gh release upload "$RELEASE_TAG" guh.flatpak
+          gh release upload "$RELEASE_TAG" "guh-${{ matrix.target }}.flatpak" --clobber
 
   android:
     runs-on: ubuntu-latest
@@ -143,13 +143,14 @@ jobs:
         run: pnpm install
 
       - name: Build Android
-        uses: tauri-apps/tauri-action@v0
+        run: pnpm tauri android build --apk
+
+      - name: Get Version and Upload
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: app-v__VERSION__ 
-          releaseName: "App v__VERSION__"
-          releaseBody: "See the assets to download this version and install."
-          releaseDraft: true
-          prerelease: false
-          args: "--target aarch64-linux-android --target armv7-linux-androideabi --target i686-linux-android --target x86_64-linux-android"
+        run: |
+          APP_VERSION=$(node -p "require('./package.json').version")
+          RELEASE_TAG="app-v$APP_VERSION"
+          
+          # Find and upload APKs
+          find src-tauri/gen/android/app/build/outputs/apk/release -name "*.apk" -exec gh release upload "$RELEASE_TAG" {} --clobber \;
