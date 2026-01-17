@@ -143,7 +143,7 @@ jobs:
         run: pnpm install
 
       - name: Build Android
-        run: pnpm tauri android build --apk
+        run: pnpm tauri android build --apk true
 
       - name: Get Version and Upload
         env:
