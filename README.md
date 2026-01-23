@@ -49,5 +49,10 @@ A: Because we downloaded it. Manually. It's artisanal.
 **Q: Can I contribute?**
 A: Please don't. The codebase is already perfect.
 
+## Credits
+
+yourlocalbreadman - Creator of Guh
+https://www.instagram.com/p/DTGqjHODUw1/
+
 ---
 *Cameron Redmore 2026. No Rights Reserved. I don't want them.*
